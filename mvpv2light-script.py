@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import subprocess
 from mistralai.client import MistralClient
 
 # Set your Mistral AI API token
@@ -10,7 +11,7 @@ api_key = os.environ["MISTRAL_API_KEY"]
 client = MistralClient(api_key=api_key)
 
 # List of available dimensions
-dimensions = ["idSite", "idVisit", "visitIp", "visitorId", "fingerprint"]
+dimensions = ["idSite", "idVisit", "visitIp", "visitorId", "fingerprint", "type (actionDetails 0)", "url (actionDetails 0)", "pageTitle (actionDetails 0)", "pageIdAction (actionDetails 0)", "idpageview (actionDetails 0)", "serverTimePretty (actionDetails 0)", "pageId (actionDetails 0)", "timeSpent (actionDetails 0)", "timeSpentPretty (actionDetails 0)", "pageviewPosition (actionDetails 0)", "title (actionDetails 0)", "subtitle (actionDetails 0)", "icon (actionDetails 0)", "iconSVG (actionDetails 0)", "timestamp (actionDetails 0)", "dimension2 (actionDetails 0)", "dimension4 (actionDetails 0)", "dimension5 (actionDetails 0)", "goalConversions", "siteCurrency", "siteCurrencySymbol", "serverDate", "visitServerHour", "lastActionTimestamp", "lastActionDateTime", "siteName", "serverTimestamp", "firstActionTimestamp", "serverTimePretty", "serverDatePretty", "serverDatePrettyFirstAction", "serverTimePrettyFirstAction", "userId", "visitorType", "visitorTypeIcon", "visitConverted", "visitConvertedIcon", "visitCount", "visitEcommerceStatus", "visitEcommerceStatusIcon", "daysSinceFirstVisit", "secondsSinceFirstVisit", "daysSinceLastEcommerceOrder", "secondsSinceLastEcommerceOrder", "visitDuration", "visitDurationPretty", "searches", "actions", "interactions", "referrerType", "referrerTypeName", "referrerName", "referrerKeyword", "referrerKeywordPosition", "referrerUrl", "referrerSearchEngineUrl", "referrerSearchEngineIcon", "referrerSocialNetworkUrl", "referrerSocialNetworkIcon", "languageCode", "language", "deviceType", "deviceTypeIcon", "deviceBrand", "deviceModel", "operatingSystem", "operatingSystemName", "operatingSystemIcon", "operatingSystemCode", "operatingSystemVersion", "browserFamily", "browserFamilyDescription", "browser", "browserName", "browserIcon", "browserCode", "browserVersion", "totalEcommerceRevenue", "totalEcommerceConversions", "totalEcommerceItems", "totalAbandonedCartsRevenue", "totalAbandonedCarts", "totalAbandonedCartsItems", "events", "continent", "continentCode", "country", "countryCode", "countryFlag", "region", "regionCode", "city", "location", "latitude", "longitude", "visitLocalTime", "visitLocalHour", "daysSinceLastVisit", "secondsSinceLastVisit", "resolution", "plugins", "pluginIcon (pluginsIcons 0)", "pluginName (pluginsIcons 0)", "dimension1", "adClickId", "adProviderId", "adProviderName", "crashes", "customVariableName1 (customVariables 1)", "customVariableValue1 (customVariables 1)", "customVariableName2 (customVariables 2)", "customVariableValue2 (customVariables 2)", "customVariableName5 (customVariables 5)", "customVariableValue5 (customVariables 5)", "formConversions", "sessionReplayUrl", "campaignId", "campaignContent", "campaignKeyword", "campaignMedium", "campaignName", "campaignSource", "campaignGroup", "campaignPlacement"]
 
 # Prompt the user for the dimensions
 selected_dimensions = []
@@ -30,7 +31,7 @@ report_type = input("What would you like to do with the selected dimensions? (e.
 filename = "1000.json"
 
 # Format the selected dimensions, report type, and filename into a string
-description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)} and {report_type}."
+description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}."
 
 # Print the prompt that will be sent to Mistral AI
 print("Prompt:", description)
@@ -72,3 +73,11 @@ print(f"Python script saved to report.py")
 # Print the contents of report.py to the console
 with open('report.py', 'r') as f:
     print(f.read())
+
+# Execute the generated Python script
+print("Executing report.py...")
+result = subprocess.run(["python", "report.py"], capture_output=True, text=True)
+
+# Print the output of the executed Python script
+print("Output of report.py:")
+print(result.stdout)
