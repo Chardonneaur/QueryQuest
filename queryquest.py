@@ -1,8 +1,10 @@
 import os
+import json
 import re
-import time
 import subprocess
 from mistralai.client import MistralClient
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 
 # Set your Mistral AI API token
 api_key = os.environ["MISTRAL_API_KEY"]
@@ -10,14 +12,20 @@ api_key = os.environ["MISTRAL_API_KEY"]
 # Initialize the Mistral AI client with the API token
 client = MistralClient(api_key=api_key)
 
-# List of available dimensions
-dimensions = ["idSite", "idVisit", "visitIp", "visitorId", "fingerprint", "type (actionDetails 0)", "url (actionDetails 0)", "pageTitle (actionDetails 0)", "pageIdAction (actionDetails 0)", "idpageview (actionDetails 0)", "serverTimePretty (actionDetails 0)", "pageId (actionDetails 0)", "timeSpent (actionDetails 0)", "timeSpentPretty (actionDetails 0)", "pageviewPosition (actionDetails 0)", "title (actionDetails 0)", "subtitle (actionDetails 0)", "icon (actionDetails 0)", "iconSVG (actionDetails 0)", "timestamp (actionDetails 0)", "dimension2 (actionDetails 0)", "dimension4 (actionDetails 0)", "dimension5 (actionDetails 0)", "goalConversions", "siteCurrency", "siteCurrencySymbol", "serverDate", "visitServerHour", "lastActionTimestamp", "lastActionDateTime", "siteName", "serverTimestamp", "firstActionTimestamp", "serverTimePretty", "serverDatePretty", "serverDatePrettyFirstAction", "serverTimePrettyFirstAction", "userId", "visitorType", "visitorTypeIcon", "visitConverted", "visitConvertedIcon", "visitCount", "visitEcommerceStatus", "visitEcommerceStatusIcon", "daysSinceFirstVisit", "secondsSinceFirstVisit", "daysSinceLastEcommerceOrder", "secondsSinceLastEcommerceOrder", "visitDuration", "visitDurationPretty", "searches", "actions", "interactions", "referrerType", "referrerTypeName", "referrerName", "referrerKeyword", "referrerKeywordPosition", "referrerUrl", "referrerSearchEngineUrl", "referrerSearchEngineIcon", "referrerSocialNetworkUrl", "referrerSocialNetworkIcon", "languageCode", "language", "deviceType", "deviceTypeIcon", "deviceBrand", "deviceModel", "operatingSystem", "operatingSystemName", "operatingSystemIcon", "operatingSystemCode", "operatingSystemVersion", "browserFamily", "browserFamilyDescription", "browser", "browserName", "browserIcon", "browserCode", "browserVersion", "totalEcommerceRevenue", "totalEcommerceConversions", "totalEcommerceItems", "totalAbandonedCartsRevenue", "totalAbandonedCarts", "totalAbandonedCartsItems", "events", "continent", "continentCode", "country", "countryCode", "countryFlag", "region", "regionCode", "city", "location", "latitude", "longitude", "visitLocalTime", "visitLocalHour", "daysSinceLastVisit", "secondsSinceLastVisit", "resolution", "plugins", "pluginIcon (pluginsIcons 0)", "pluginName (pluginsIcons 0)", "dimension1", "adClickId", "adProviderId", "adProviderName", "crashes", "customVariableName1 (customVariables 1)", "customVariableValue1 (customVariables 1)", "customVariableName2 (customVariables 2)", "customVariableValue2 (customVariables 2)", "customVariableName5 (customVariables 5)", "customVariableValue5 (customVariables 5)", "formConversions", "sessionReplayUrl", "campaignId", "campaignContent", "campaignKeyword", "campaignMedium", "campaignName", "campaignSource", "campaignGroup", "campaignPlacement"]
+# Load the list of available dimensions from a JSON file
+with open('dimension_list.json') as f:
+    dimensions = json.load(f)
 
-# Prompt the user for the dimensions
+# Initialize the list of selected dimensions
 selected_dimensions = []
+
+# Create a WordCompleter for the dimensions
+completer = WordCompleter(dimensions)
+
+# Prompt the user to select dimensions with autocompletion
 while True:
-    dimension = input(f"Choose a dimension from this list: {', '.join(dimensions)} or type 'no' to proceed: ")
-    if dimension.lower() == "no":
+    dimension = prompt('Choose a dimension from this list: ' + ', '.join(dimensions) + ' or type \'no\' to proceed: ', completer=completer)
+    if dimension == 'no':
         break
     elif dimension in dimensions:
         selected_dimensions.append(dimension)
@@ -44,9 +52,6 @@ chat_response = client.chat(
         {"role": "user", "content": description}
     ]
 )
-
-# Wait for 2 seconds before continuing with the script
-time.sleep(2)
 
 # Print the response from Mistral AI
 print("Response:", chat_response.choices[0].message.content)

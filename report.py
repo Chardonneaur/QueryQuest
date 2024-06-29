@@ -1,16 +1,32 @@
 
 import json
-from tabulate import tabulate
+from collections import defaultdict
+from datetime import datetime
 
-# Load the data from the JSON file
-with open('1000.json') as f:
+# Load data from JSON file
+with open('1000.json', 'r') as f:
     data = json.load(f)
 
-# Extract the required dimensions
-table_data = [(item['serverDatePretty'], item['referrerType'], item['visitIp'], item['browser']) for item in data]
+# Initialize containers for our report
+country_count = defaultdict(int)
+referrer_count = defaultdict(int)
+date_count = defaultdict(int)
 
-# Define the headers for the table
-headers = ["Server Date", "Referrer Type", "Visit IP", "Browser"]
+# Process data
+for item in data:
+    country_count[item['country']] += 1
+    referrer_count[item['referrerType']] += 1
+    date_count[datetime.strptime(item['serverDate'], '%Y-%m-%d').date()] += 1
 
-# Print the table
-print(tabulate(table_data, headers=headers, tablefmt="grid"))
+# Print report
+print("Country report:")
+for country, count in country_count.items():
+    print(f"{country}: {count}")
+
+print("\nReferrer type report:")
+for referrer, count in referrer_count.items():
+    print(f"{referrer}: {count}")
+
+print("\nServer date report:")
+for date, count in date_count.items():
+    print(f"{date}: {count}")
