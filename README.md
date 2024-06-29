@@ -1,20 +1,17 @@
 # QueryQuest
 
-QueryQuest is an open-source web application that empowers Matomo users to ask questions about their analytics data and receive customized reports in response. Our app leverages the Matomo API to query and extract data based on user-defined parameters, making it easy for users to gain insights into their website traffic, user behavior, and other key metrics.
+QueryQuest is an open-source web application that empowers Matomo users to custom reports based on the Live method API.
 
-## Version 1: Fetching Raw Data
+## Version 1: Custom reports
 
-The first version of QueryQuest focuses on fetching raw data from Matomo and presenting it to the user in a clear and concise format. With QueryQuest v1, users can:
-
-* Get a customize and general datafeed
-* Customize the data range and other parameters for their queries
-* Receive accurate and up-to-date raw data in response to their queries
+The first version of QueryQuest focuses on creating a custom report based on a json sample dataset.
 
 ## Future Plans
 
 In future versions of QueryQuest, we plan to add features such as:
 
-* LLM Mistral AI
+- Querying a specific datafeed
+- Ask Mistral AI to make recommendations based on the data.
 
 ## Contributing
 
