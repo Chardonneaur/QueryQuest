@@ -1,18 +1,21 @@
 
 import json
+import pandas as pd
+import matplotlib.pyplot as plt
 
-# Load data from the JSON file
-with open('1000.json', 'r') as f:
-    data = json.load(f)
+# Load data from JSON file
+with open('1000.json', 'r') as file:
+    data = json.load(file)
 
-# Assuming that 'data' is a list of dictionaries, we iterate over it
-titles = []
-for item in data:
-    # Check if 'actionDetails' and 'title' keys exist in the dictionary
-    if 'actionDetails' in item and 'title' in item['actionDetails']:
-        titles.append(item['actionDetails']['title'])
+# Extract the 'country' values and count the occurrences
+countries = [d['country'] for d in data]
+country_counts = pd.value_counts(countries)
 
-# Generate a simple report
-print("Report on actionDetails.title:")
-for title in titles:
-    print(f"- {title}")
+# Plot a pie chart
+plt.pie(country_counts, labels=country_counts.index, autopct='%1.1f%%')
+plt.title('Country Distribution')
+plt.axis('equal')
+plt.show()
+
+# Save the data to a CSV file
+country_counts.to_csv('country_counts.csv', header=['Count'])

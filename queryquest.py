@@ -32,14 +32,19 @@ while True:
     else:
         print("Invalid input. Please try again.")
 
+# Format the selected dimensions, report type, and filename into a string
+if any(dim.startswith('actionDetails.') for dim in selected_dimensions):
+    action_details_handling = "If any dimension starts with 'actionDetails.', handle this dimension specifically by iterating through the 'actionDetails' array within each item."
+else:
+    action_details_handling = ""
+
 # Prompt the user for the type of report they want
 report_type = input("What would you like to do with the selected dimensions? (e.g., group them, make a pie chart, etc.): ")
 
 # Set the filename of the JSON data source
 filename = "1000.json"
 
-# Format the selected dimensions, report type, and filename into a string
-description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}."
+description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}. {action_details_handling} At the end, export the data as a CSV file."
 
 # Print the prompt that will be sent to Mistral AI
 print("Prompt:", description)
@@ -64,9 +69,6 @@ if match is None:
     exit()
 else:
     python_script = match.group(1)
-
-# Modify the generated Python script to load the data from the specified file
-python_script = python_script.replace("data.json", filename)
 
 # Save the generated Python script to a file
 with open('report.py', 'w') as f:
