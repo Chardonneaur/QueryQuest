@@ -2,6 +2,7 @@ import os
 import json
 import re
 import subprocess
+import requests
 from mistralai.client import MistralClient
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
@@ -41,10 +42,28 @@ else:
 # Prompt the user for the type of report they want
 report_type = input("What would you like to do with the selected dimensions? (e.g., group them, make a pie chart, etc.): ")
 
-# Set the filename of the JSON data source
-filename = "1000.json"
+# Define the base URL
+base_url = "https://demo.matomo.cloud"
 
-description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}. {action_details_handling} At the end, export the data as a CSV file."
+# Prompt the user for the components of the URL
+url_path = input("Enter the URL path (default is '/index.php?module=API&format=JSON&period=range&date=2024-01-01,2024-01-01&method=Live.getLastVisitsDetails&filter_limit=1000&expanded=1'): ") or "/index.php?module=API&format=JSON&period=range&date=2024-01-01,2024-01-01&method=Live.getLastVisitsDetails&filter_limit=1000&expanded=1"
+id_site = input("Enter the idSite (default is 1): ") or "1"
+token_auth = input("Enter the token_auth: ")
+
+# Construct the URL
+url = f"{base_url}{url_path}&idSite={id_site}&token_auth={token_auth}"
+
+# Download the data from the URL
+response = requests.get(url)
+
+# Save the data to a file named 'data_source.json'
+with open('data_source.json', 'w') as f:
+    f.write(response.text)
+
+# Set the filename of the JSON data source
+filename = "data_source.json"
+
+description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}. {action_details_handling} At the end, export the data as a CSV file named 'output.csv'."
 
 # Print the prompt that will be sent to Mistral AI
 print("Prompt:", description)

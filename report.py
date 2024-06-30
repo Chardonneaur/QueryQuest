@@ -1,21 +1,14 @@
 
-import json
 import pandas as pd
-import matplotlib.pyplot as plt
 
-# Load data from JSON file
-with open('1000.json', 'r') as file:
-    data = json.load(file)
+# Load the data from the JSON file
+df = pd.read_json('data_source.json')
 
-# Extract the 'country' values and count the occurrences
-countries = [d['country'] for d in data]
-country_counts = pd.value_counts(countries)
+# Group by 'country' and count the occurrences
+grouped = df.groupby('country').size().reset_index(name='count')
 
-# Plot a pie chart
-plt.pie(country_counts, labels=country_counts.index, autopct='%1.1f%%')
-plt.title('Country Distribution')
-plt.axis('equal')
-plt.show()
+# Sort by 'count' in descending order and get the top 5
+top_5 = grouped.sort_values('count', ascending=False).head(5)
 
-# Save the data to a CSV file
-country_counts.to_csv('country_counts.csv', header=['Count'])
+# Export the top 5 to a CSV file
+top_5.to_csv('output.csv', index=False)
