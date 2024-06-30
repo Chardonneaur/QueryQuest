@@ -1,14 +1,28 @@
 
 import pandas as pd
+import matplotlib.pyplot as plt
+import json
 
 # Load the data from the JSON file
-df = pd.read_json('data_source.json')
+with open('data_source.json') as f:
+    data = json.load(f)
 
-# Group by 'country' and count the occurrences
-grouped = df.groupby('country').size().reset_index(name='count')
+# Convert the JSON data to a pandas DataFrame
+df = pd.DataFrame(data)
 
-# Sort by 'count' in descending order and get the top 5
-top_5 = grouped.sort_values('count', ascending=False).head(5)
+# Count the frequency of each country
+country_counts = df['country'].value_counts()
 
-# Export the top 5 to a CSV file
-top_5.to_csv('output.csv', index=False)
+# Create a pie chart
+plt.pie(country_counts, labels=country_counts.index, autopct='%1.1f%%')
+plt.title('Most Popular Countries')
+plt.show()
+
+# Analysis
+print("Analysis:")
+print("The most popular countries on your website are:")
+print(country_counts.head())
+print("\nTo improve your website, you might want to consider adding more content or features that cater to these countries.")
+
+# Export the data to a CSV file
+df.to_csv('output.csv', index=False)

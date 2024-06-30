@@ -45,8 +45,14 @@ report_type = input("What would you like to do with the selected dimensions? (e.
 # Define the base URL
 base_url = "https://demo.matomo.cloud"
 
-# Prompt the user for the components of the URL
-url_path = input("Enter the URL path (default is '/index.php?module=API&format=JSON&period=range&date=2024-01-01,2024-01-01&method=Live.getLastVisitsDetails&filter_limit=1000&expanded=1'): ") or "/index.php?module=API&format=JSON&period=range&date=2024-01-01,2024-01-01&method=Live.getLastVisitsDetails&filter_limit=1000&expanded=1"
+# Prompt the user for the date range
+start_date = input("Enter the start date (format: YYYY-MM-DD): ") or "2024-01-01"
+end_date = input("Enter the end date (format: YYYY-MM-DD): ") or "2024-01-01"
+
+# Construct the URL path with the date range
+url_path = f"/index.php?module=API&format=JSON&period=range&date={start_date},{end_date}&method=Live.getLastVisitsDetails&filter_limit=1000&expanded=1"
+
+# Prompt the user for the idSite and token_auth
 id_site = input("Enter the idSite (default is 1): ") or "1"
 token_auth = input("Enter the token_auth: ")
 
@@ -63,7 +69,7 @@ with open('data_source.json', 'w') as f:
 # Set the filename of the JSON data source
 filename = "data_source.json"
 
-description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}. {action_details_handling} At the end, export the data as a CSV file named 'output.csv'."
+description = f"Create a Python script where the source of the data is a file named {filename} by using those dimensions: {', '.join(selected_dimensions)}. {report_type}. {action_details_handling} From those data, give me your analysis in order to improve my website. At the end, export the data as a CSV file named 'output.csv'."
 
 # Print the prompt that will be sent to Mistral AI
 print("Prompt:", description)
